@@ -1,0 +1,60 @@
+name: update
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 23 * * *"
+
+env:
+  TZ: Asia/Shanghai 
+
+jobs:
+  update:
+    name: update
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - name: set timezone
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          date +"%Y-%m-%d %H:%M:%S"
+          
+      - name: system info
+        run: |
+          date +"%Y-%m-%d %H:%M:%S"
+          lscpu | grep -E '^Architecture|^CPU\(s\):|^Model name'
+          uname -sr
+          lsb_release -a
+          free -h
+
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: update
+        run: |
+          date +"%Y-%m-%d %H:%M:%S"
+          wget -q ${{ secrets.PREPARE_GEODATA }}
+          wget -q ${{ secrets.PREPARE_RULESET }}
+          bash prepare-geodata.sh
+          bash prepare-ruleset.sh
+      
+      - name: prepare
+        run: |
+          date +"%Y-%m-%d %H:%M:%S"
+          git clone -b rules https://github.com/apoiston/index.git
+          sed -i "s/N\/A/$(date +'%Y.%m.%d %H:%M:%S')/g" index/index.html
+          cp -a index/*.{html,css,js} $GITHUB_WORKSPACE
+
+      - name: commit
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan rules
+          git rm -rf .
+          git add *.{html,css,js} ruleset rules conf geox
+          git commit -m "updated on $(date +"%Y-%m-%d %H:%M:%S")"
+          git push -f origin rules
+          
