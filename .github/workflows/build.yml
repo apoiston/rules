@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 23 * * *"
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+
+    steps:
+      - name: Set timezone
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          date +"%Y-%m-%d %H:%M:%S %Z"
+                    
+      - name: Display system information
+        run: |
+          date +"%Y-%m-%d %H:%M:%S %Z"
+          lscpu | grep -E '^Architecture|^CPU\(s\):|^Model name'
+          uname -sr
+          lsb_release -a
+          free -h
+          df -Th
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Build
+        run: |
+          wget -q -T 15 -t 5 -O- "${{ secrets.BUILD_GEODATA }}" | bash
+          wget -q -T 15 -t 5 -O- "${{ secrets.BUILD_RULESET }}" | bash
+
+      - name: Prepare
+        run: |
+          git clone --depth=1 --quiet --branch rules https://github.com/apoiston/index.git
+          sed -i "s/N\/A/$(date +"%Y-%m-%d %H:%M:%S %Z")/g" index/index.html
+          rsync -a --quiet --include="*.html" --include="*.css" --include="*.js" --exclude="*" index/ "$GITHUB_WORKSPACE/"
+
+      - name: Commit
+        run: |
+          git switch --orphan rules
+          git add *.html *.css *.js ruleset rules conf geox
+          git commit -m "build: $(date +"%Y-%m-%d %H:%M:%S %Z")"
+          git push origin rules --force
