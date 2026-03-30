@@ -3,17 +3,18 @@ name: Delete
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 2 * * 0"
+    - cron: "0 9 * * 0"
 
 jobs:
   delete:
+    name: Delete
     runs-on: ubuntu-latest
     permissions:
       actions: write
       contents: read
 
     steps:
-      - name: Delete
+      - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
         with:
           retain_days: 0
