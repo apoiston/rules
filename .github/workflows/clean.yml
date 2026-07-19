@@ -1,0 +1,28 @@
+name: Clean
+
+on:
+  workflow_dispatch:
+    inputs:
+      delete_deployments_days:
+        description: 'Deployment retention days'
+        required: false
+        type: string
+        default: '30'
+
+  schedule:
+    - cron: "39 19 * * 6"
+
+jobs:
+  clean:
+    name: Clean
+    runs-on: ubuntu-26.04
+          
+    steps:
+      - name: Delete deployments
+        uses: apoiston/actions@cleaner
+        with:
+          cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          project_name: initrules
+          enable_delete_deployments: true 
+          delete_deployments_days: ${{ inputs.delete_deployments_days || '30' }}
