@@ -1,0 +1,51 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "39 22 * * *"
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+
+    steps:
+      - name: Set timezone
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          date +"%Y-%m-%d %H:%M:%S %:z"
+                    
+      - name: Inspect runner
+        run: |
+          date +"%Y-%m-%d %H:%M:%S %:z"
+          lscpu | grep -E '^Architecture|^CPU\(s\):|^Model name'
+          uname -sr
+          lsb_release -a
+          free -h
+          df -Th
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup bot
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Build
+        run: |
+          wget -q -T 15 -t 5 -O- "${{ secrets.BUILD_GEODATA }}" | bash
+          wget -q -T 15 -t 5 -O- "${{ secrets.BUILD_RULESET }}" | bash
+
+      - name: Commit
+        run: |
+          git switch --orphan rules
+          git add *.html ruleset rules conf geox
+          git commit -m "$(date +"%Y-%m-%d %H:%M:%S %:z")"
+          git push origin rules --force
