@@ -7,10 +7,10 @@ on:
         description: 'Deployment retention days'
         required: false
         type: string
-        default: '30'
+        default: '7'
 
   schedule:
-    - cron: "39 19 * * 6"
+    - cron: "30 19 * * 6"
 
 jobs:
   clean:
@@ -25,4 +25,4 @@ jobs:
           cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           project_name: initrules
           enable_delete_deployments: true 
-          delete_deployments_days: ${{ inputs.delete_deployments_days || '30' }}
+          delete_deployments_days: ${{ inputs.delete_deployments_days || '7' }}
