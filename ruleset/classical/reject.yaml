@@ -1,0 +1,15 @@
+payload:
+  - DOMAIN-REGEX,^.*\.shouji\.sogou\.com$
+  - DOMAIN-REGEX,^.*\.[a-zA-Z0-9-]{1,63}skwai\.com$
+  - DOMAIN-REGEX,^.*\.a\.market\.xiaomi\.com$
+  - DOMAIN-REGEX,^.*\.data\.hicloud\.com$
+  - DOMAIN-REGEX,^.*\.log\.aliyuncs\.com$
+  - DOMAIN-REGEX,^[a-zA-Z0-9-]{1,63}-ad\.wtzw\.com$
+  - DOMAIN-REGEX,^[a-zA-Z0-9-]{1,63}-ad\.sm\.cn$
+  - DOMAIN-REGEX,^[a-zA-Z0-9-]{1,63}-lm\.adkwai\.com$
+  - DOMAIN-REGEX,^[a-zA-Z0-9-]{1,63}-ad\.video\.yximgs\.com$
+  - DOMAIN-REGEX,^[a-zA-Z0-9-]{1,63}-be-pack-sign\.pglstatp-toutiao\.com$
+  - DOMAIN-REGEX,^[a-zA-Z0-9-]{1,63}-ad-[a-zA-Z0-9-]{1,63}\.byteimg\.com$
+  - DOMAIN-REGEX,^[a-zA-Z0-9-]{1,63}-normal\.zijieapi\.com$
+  - DOMAIN-REGEX,^[a-zA-Z0-9-]{1,63}-normal-[a-zA-Z0-9-]{1,63}\.zijieapi\.com$
+  - DOMAIN-REGEX,^cloudinject[a-zA-Z0-9-]{1,63}-dev\.[a-zA-Z0-9-]{1,63}\.[a-zA-Z0-9-]{1,63}-[a-zA-Z0-9-]{1,63}-[a-zA-Z0-9-]{1,63}\.amazonaws\.com$
